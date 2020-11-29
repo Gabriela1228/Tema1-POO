@@ -48,6 +48,7 @@ public final class SerialInputData extends ShowInput {
     }
 
     //My field
+    //Grade
     private double grade;
 
     public double getGrade() {
@@ -56,5 +57,16 @@ public final class SerialInputData extends ShowInput {
 
     public void setGrade(double grade) {
         this.grade = grade;
+    }
+
+    //Duration
+    private int duration;
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

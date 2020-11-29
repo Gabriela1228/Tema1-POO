@@ -59,4 +59,14 @@ public final class UserInputData {
                 + history + ", favoriteMovies="
                 + favoriteMovies + '}';
     }
+
+    private int num_ratings;
+
+    public int getNum_ratings() {
+        return num_ratings;
+    }
+
+    public void setNum_ratings(int num_ratings) {
+        this.num_ratings = num_ratings;
+    }
 }

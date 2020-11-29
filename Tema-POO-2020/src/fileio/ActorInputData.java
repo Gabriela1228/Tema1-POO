@@ -84,4 +84,14 @@ public final class ActorInputData {
     public void setGrade(double grade) {
         this.grade = grade;
     }
+
+    private int number_awards;
+
+    public int getNumber_awards() {
+        return number_awards;
+    }
+
+    public void setNumber_awards(int number_awards) {
+        this.number_awards = number_awards;
+    }
 }
