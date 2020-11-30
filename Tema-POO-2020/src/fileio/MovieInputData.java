@@ -67,5 +67,4 @@ public final class MovieInputData extends ShowInput {
     public void setArrayRating(ArrayList<Double> arrayRating) {
         this.arrayRating = arrayRating;
     }
-
 }

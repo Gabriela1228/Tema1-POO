@@ -86,6 +86,8 @@ public final class Main {
                 usernumrating;
         ArrayList<String> showviews = new ArrayList<>();
         HashMap<String, Integer> genres;
+        HashMap<String, Integer> favorite;
+        HashMap<String, Double> search;
 
         String message = null;
         int seen = 0, foundYear, foundGenre, idx, N, nr, index, numRatings,
@@ -890,11 +892,13 @@ public final class Main {
                         for (String key : sorted.keySet()) {
                             for (ShowInput show : shows) {
                                 if (show.getGenres().contains(key)) {
-                                    if (thisUser.getHistory().containsKey(show.getTitle())) {
+                                    if (thisUser.getHistory()
+                                            .containsKey(show.getTitle())) {
                                         found = 0;
                                     } else {
                                         found = 1;
-                                        message = "PopularRecommendation result: " + show.getTitle();
+                                        message = "PopularRecommendation "
+                                                + "result: " + show.getTitle();
                                     }
                                     if (found == 1) {
                                         break;
@@ -906,6 +910,117 @@ public final class Main {
                             }
                         }
                     }
+                    if (found == 0) {
+                        message = "PopularRecommendation cannot be applied!";
+                    }
+                }
+
+                /**
+                 *                    *FAVORITE*
+                 */
+
+                if (action.getType().equals("favorite")) {
+
+                    int inFav;
+                    favorite = new HashMap<>();
+                    shows = new ArrayList<>();
+                    shows.addAll(movies);
+                    shows.addAll(serials);
+
+                    for (ShowInput show : shows) {
+                        inFav = 0;
+                        for (UserInputData user : users) {
+                            if (user.getFavoriteMovies()
+                                    .contains(show.getTitle())) {
+                                inFav++;
+                            }
+                        }
+                        favorite.put(show.getTitle(), inFav);
+                    }
+
+                    Map<String, Integer> sorted = favorite.entrySet().stream()
+                            .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                                    (e1, e2) -> e1, LinkedHashMap::new));
+
+                    String username = action.getUsername();
+                    UserInputData thisUser = null;
+                    for (UserInputData user : users) {
+                        if (user.getUsername().equals(username)) {
+                            if (user.getSubscriptionType().equals("PREMIUM")) {
+                                thisUser = user;
+                            }
+                        }
+                    }
+
+                    int found = 0;
+                    if (thisUser != null) {
+                        for (String key : sorted.keySet()) {
+                            if (thisUser.getHistory().containsKey(key)) {
+                                found = 0;
+                            } else {
+                                found = 1;
+                            }
+                            if (found == 1) {
+                                message = "FavoriteRecommendation result: "
+                                        + key;
+                                break;
+                            }
+                        }
+                    }
+                    if (found == 0) {
+                        message = "FavoriteRecommendation cannot be applied!";
+                    }
+
+                }
+
+                /**
+                 *                    *SEARCH*
+                 */
+
+                if (action.getType().equals("search")) {
+                    String genre = action.getGenre();
+                    String username = action.getUsername();
+                    search = new HashMap<>();
+
+                    for (MovieInputData movie : movies) {
+                        //System.out.println(movie.getTitle());
+                        S = 0;
+                        nr = 0;
+                        if (movie.getGenres().contains(genre)) {
+                            for (Double value : movie.getRating().values()) {
+                                // System.out.println(value);
+                                S += value;
+                                nr++;
+                            }
+                        }
+                        rating = S / nr;
+                        search.put(movie.getTitle(), rating);
+                    }
+                    for (SerialInputData serial : serials) {
+                        S = 0;
+                        nr = 0;
+                        if (serial.getGenres().contains(genre)) {
+                            for (int j = 0; j < serial.getSeasons().size(); j++) {
+                                //System.out.println(serial.getSeasons().get(j).getRatings());
+                                for (int k = 0; k < serial.getSeasons()
+                                        .get(j).getRatings().size(); k++) {
+                                    S += serial.getSeasons().get(j).getRatings().get(k);
+                                    nr++;
+                                }
+                            }
+                            rating = S / nr;
+                            search.put(serial.getTitle(), rating);
+                        }
+                    }
+
+//                    Map<String, Double> sorted = search.entrySet().stream()
+//                            .sorted(Map.Entry.comparingByValue(), Map.Entry.comparingByKey())
+//                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+//                                    (e1, e2) -> e1, LinkedHashMap::new));
+
+
+                    message = "SearchRecommendation cannot be applied!";
                 }
 
             }
